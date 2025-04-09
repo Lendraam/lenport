@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Moon,
@@ -62,12 +61,14 @@ export default function Navbar() {
   ];
 
   return (
-<nav className="bg-[var(--background)] text-[var(--foreground)] shadow-md sticky top-0 z-50">
-  <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-    <Link href="/" className="text-xl font-bold text-blue-600 flex items-center gap-2 hover:underline cursor-pointer">
-      💻 Lendra's Portfolio
-    </Link>
-    ...
+    <nav className="bg-[var(--background)] text-[var(--foreground)] shadow-md sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-xl font-bold text-blue-600 flex items-center gap-2 hover:underline cursor-pointer"
+        >
+          💻 Lendra&apos;s Portfolio
+        </Link>
 
         {/* Mobile Toggle Button */}
         <div className="md:hidden">
@@ -95,7 +96,11 @@ export default function Navbar() {
             onClick={toggleTheme}
             className="px-3 py-1 border rounded-md flex items-center gap-2 hover:bg-blue-100 dark:hover:bg-gray-800 transition"
           >
-            {theme === "dark" ? <Sun size={16} className="text-yellow-400" /> : <Moon size={16} className="text-gray-700" />}
+            {theme === "dark" ? (
+              <Sun size={16} className="text-yellow-400" />
+            ) : (
+              <Moon size={16} className="text-gray-700" />
+            )}
             {theme === "dark" ? "Light" : "Dark"}
           </button>
         </div>
@@ -122,7 +127,11 @@ export default function Navbar() {
             }}
             className="px-3 py-1 border rounded-md flex items-center gap-2 w-fit"
           >
-            {theme === "dark" ? <Sun size={16} className="text-yellow-400" /> : <Moon size={16} className="text-gray-700" />}
+            {theme === "dark" ? (
+              <Sun size={16} className="text-yellow-400" />
+            ) : (
+              <Moon size={16} className="text-gray-700" />
+            )}
             {theme === "dark" ? "Light" : "Dark"}
           </button>
         </div>
