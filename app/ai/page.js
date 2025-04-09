@@ -34,23 +34,10 @@ export default function ChatBox() {
   };
 
   return (
-    <div
-      className="p-4 max-w-xl mx-auto rounded-2xl shadow-xl"
-      style={{
-        backgroundColor: 'var(--background)',
-        color: 'var(--foreground)',
-        border: '1px solid var(--muted)',
-      }}
-    >
+    <div className="p-4 max-w-xl mx-auto rounded-2xl shadow-xl bg-white dark:bg-gray-950 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700">
       <h2 className="text-xl font-semibold mb-4 text-center">💬 AI Chat Assistant</h2>
-      <div
-        className="border rounded-lg p-4 h-[300px] overflow-y-auto mb-4 scroll-smooth"
-        style={{
-          backgroundColor: 'var(--card)',
-          color: 'var(--foreground)',
-          borderColor: 'var(--muted)',
-        }}
-      >
+
+      <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 h-[300px] overflow-y-auto mb-4 scroll-smooth bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
         {chat.map((msg, idx) => (
           <div
             key={idx}
@@ -62,16 +49,8 @@ export default function ChatBox() {
               className={`text-sm px-4 py-2 rounded-xl max-w-[80%] shadow ${
                 msg.role === 'user'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 dark:text-white text-gray-900'
+                  : 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white'
               }`}
-              style={{
-                backgroundColor:
-                  msg.role === 'user' ? 'var(--primary)' : 'var(--muted)',
-                color:
-                  msg.role === 'user'
-                    ? 'white'
-                    : 'var(--foreground)',
-              }}
             >
               {msg.text}
             </p>
@@ -80,27 +59,19 @@ export default function ChatBox() {
         {loading && <p className="text-sm italic text-center">Loading...</p>}
         <div ref={chatEndRef} />
       </div>
+
       <div className="flex gap-2">
         <input
           type="text"
-          className="border rounded-lg p-2 flex-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg p-2 flex-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Tulis pertanyaan..."
-          style={{
-            backgroundColor: 'var(--card)',
-            color: 'var(--foreground)',
-            borderColor: 'var(--muted)',
-          }}
         />
         <button
           onClick={handleSend}
-          className="px-4 py-2 rounded-lg font-medium transition-all shadow hover:brightness-110"
-          style={{
-            backgroundColor: 'var(--primary)',
-            color: 'white',
-          }}
+          className="px-4 py-2 rounded-lg font-medium transition-all shadow bg-blue-600 text-white hover:brightness-110"
         >
           Kirim
         </button>
