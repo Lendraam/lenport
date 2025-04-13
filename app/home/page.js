@@ -5,8 +5,29 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import { TypeAnimation } from "react-type-animation";
+import { useState, useEffect } from "react";
 
 export default function HomePage() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    setIsDarkMode(savedTheme === "dark");
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   return (
     <>
       <motion.div
@@ -16,7 +37,7 @@ export default function HomePage() {
         transition={{ duration: 0.8 }}
       >
         <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Bagian Kiri: Teks */}
+          {/* Kiri: Teks */}
           <div className="text-center md:text-left space-y-6">
             <motion.h1
               className="text-4xl md:text-5xl font-bold text-blue-600 dark:text-yellow-400"
@@ -62,22 +83,22 @@ export default function HomePage() {
                 </button>
               </Link>
 
-              {/* Icon Sosial */}
+              {/* Sosial Media */}
               <div className="flex gap-4 text-2xl text-blue-600 dark:text-yellow-300">
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition">
+                <a href="https://github.com/Lendraam" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition">
                   <FaGithub />
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition">
+                <a href="https://www.linkedin.com/in/ulen-yt-810189258/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition">
                   <FaLinkedin />
                 </a>
-                <a href="mailto:lendra@email.com" className="hover:scale-110 transition">
+                <a href="mailto:lendraam2323@email.com" className="hover:scale-110 transition">
                   <FaEnvelope />
                 </a>
               </div>
             </motion.div>
           </div>
 
-          {/* Bagian Kanan: Gambar Bulat + Efek */}
+          {/* Kanan: Foto + Toggle Mode */}
           <motion.div
             className="bg-[var(--card)] backdrop-blur-md rounded-xl shadow-lg p-4 flex flex-col items-center gap-4 border border-gray-300 dark:border-gray-700 transition-colors duration-300"
             initial={{ opacity: 0, y: 20 }}
@@ -85,7 +106,7 @@ export default function HomePage() {
             transition={{ delay: 0.5 }}
           >
             <Image
-              src="/profile.jpg"
+              src={isDarkMode ? "/dark.jpg" : "/light.png"}
               alt="Foto Profil Lendra"
               width={240}
               height={240}
@@ -95,11 +116,18 @@ export default function HomePage() {
             <span className="px-3 py-1 text-sm font-semibold bg-blue-100 dark:bg-yellow-700 dark:text-white text-blue-600 rounded-full">
               Fullstack Developer
             </span>
+
+            <button
+              onClick={toggleTheme}
+              className="mt-4 px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-full hover:bg-blue-600 dark:bg-yellow-500 dark:hover:bg-yellow-600"
+            >
+              {isDarkMode ? "Mode Terang" : "Mode Gelap"}
+            </button>
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Section Tambahan: Highlights */}
+      {/* Highlights Section */}
       <section className="mt-16 mb-24 w-full">
         <motion.div
           className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-6"
@@ -112,23 +140,21 @@ export default function HomePage() {
           }}
           transition={{ duration: 0.5 }}
         >
-          {[
-            {
-              title: "Responsif & Mobile First",
-              desc: "Tampilan optimal di semua perangkat dari desktop hingga ponsel.",
-              emoji: "📱",
-            },
-            {
-              title: "Bertenaga Next.js",
-              desc: "Menggunakan framework modern untuk performa dan SEO terbaik.",
-              emoji: "⚡",
-            },
-            {
-              title: "UI Elegan",
-              desc: "Mengutamakan pengalaman pengguna dengan desain bersih & interaktif.",
-              emoji: "🎨",
-            },
-          ].map((item, idx) => (
+          {[{
+            title: "Responsif & Mobile First",
+            desc: "Tampilan optimal di semua perangkat dari desktop hingga ponsel.",
+            emoji: "📱",
+          },
+          {
+            title: "Bertenaga Next.js",
+            desc: "Menggunakan framework modern untuk performa dan SEO terbaik.",
+            emoji: "⚡",
+          },
+          {
+            title: "UI Elegan",
+            desc: "Mengutamakan pengalaman pengguna dengan desain bersih & interaktif.",
+            emoji: "🎨",
+          }].map((item, idx) => (
             <motion.div
               key={idx}
               className="p-6 rounded-2xl shadow-md bg-[var(--card)] text-[var(--foreground)] border border-[var(--muted)] hover:scale-105 hover:shadow-xl transition"
