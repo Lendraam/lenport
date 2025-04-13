@@ -40,22 +40,58 @@ export default function PortfolioPage() {
 
   return (
     <>
-      <PortfolioGallery selected={selected} setSelected={setSelected} />
+      {/* Timeline Section: Jejak Pendidikan */}
+      <section className="my-24 px-2 sm:px-6">
+        <h2 className="text-4xl font-bold text-center text-blue-600 dark:text-yellow-400 mb-16">
+          🎓 Jejak Langkah Pendidikan Saya
+        </h2>
 
-      {selected && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-xl max-w-md w-full mx-4 shadow-2xl relative transition-colors duration-300">
-            <button
-              onClick={() => setSelected(null)}
-              className="absolute top-3 right-3 text-xl font-bold"
-            >
-              ✕
-            </button>
-            <h3 className="text-2xl font-semibold mb-3">{selected.title}</h3>
-            <p className="text-sm leading-relaxed">{selected.description}</p>
-          </div>
+        <div className="relative max-w-4xl mx-auto">
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-blue-400 dark:bg-yellow-400"></div>
+
+          {timelineData.map((item, index) => {
+            const isLeft = index % 2 === 0;
+            return (
+              <motion.div
+                key={index}
+                className={`mb-8 flex flex-col md:flex-row items-center ${isLeft ? "md:justify-start" : "md:justify-end"}`}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+              >
+                {isLeft && (
+                  <div className="md:w-1/2 px-4">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-xl shadow-md">
+                      <div className="flex items-center gap-3 text-blue-600 dark:text-yellow-400 text-xl mb-2">
+                        {item.icon}
+                        <h3 className="font-bold">{item.sekolah}</h3>
+                      </div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{item.tahun}</p>
+                      <p className="text-sm leading-relaxed">{item.deskripsi}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-blue-500 dark:bg-yellow-400 border-4 border-white dark:border-gray-900 z-10 shadow-lg" />
+
+                {!isLeft && (
+                  <div className="md:w-1/2 px-4">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-xl shadow-md">
+                      <div className="flex items-center gap-3 text-blue-600 dark:text-yellow-400 text-xl mb-2">
+                        {item.icon}
+                        <h3 className="font-bold">{item.sekolah}</h3>
+                      </div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{item.tahun}</p>
+                      <p className="text-sm leading-relaxed">{item.deskripsi}</p>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
-      )}
+      </section>
 
       {/* Skill Set Section */}
       <section className="my-16 px-6">
@@ -81,60 +117,8 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className="my-24 px-2 sm:px-6">
-        <h2 className="text-4xl font-bold text-center text-blue-600 dark:text-yellow-400 mb-16">
-          🎓 Jejak Langkah Pendidikan Saya
-        </h2>
-
-        <div className="relative max-w-4xl mx-auto">
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-blue-400 dark:bg-yellow-400"></div>
-
-          {timelineData.map((item, index) => {
-            const isLeft = index % 2 === 0;
-            return (
-              <motion.div
-              key={index}
-              className={`mb-8 flex flex-col md:flex-row items-center ${
-                isLeft ? "md:justify-start" : "md:justify-end"
-              }`}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-              >
-                {isLeft && (
-                  <div className="md:w-1/2 px-4">
-                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-xl shadow-md">
-                      <div className="flex items-center gap-3 text-blue-600 dark:text-yellow-400 text-xl mb-2">
-                        {item.icon}
-                        <h3 className="font-bold">{item.sekolah}</h3>
-                      </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{item.tahun}</p>
-                      <p className="text-sm leading-relaxed">{item.deskripsi}</p>
-                    </div>
-                  </div>
-                )}
-
-        <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-blue-500 dark:bg-yellow-400 border-4 border-white dark:border-gray-900 z-10 shadow-lg" />
-
-                {!isLeft && (
-                  <div className="md:w-1/2 px-4">
-                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-xl shadow-md">
-                      <div className="flex items-center gap-3 text-blue-600 dark:text-yellow-400 text-xl mb-2">
-                        {item.icon}
-                        <h3 className="font-bold">{item.sekolah}</h3>
-                      </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{item.tahun}</p>
-                      <p className="text-sm leading-relaxed">{item.deskripsi}</p>
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
-        </div>
-      </section>
+      {/* Portfolio Gallery Section */}
+      <PortfolioGallery selected={selected} setSelected={setSelected} />
 
       {/* Social Media Section */}
       <section className="my-16 px-6">
@@ -144,10 +128,10 @@ export default function PortfolioPage() {
 
         <div className="flex justify-center gap-8">
           {[
-            { href: "https://github.com/lendraafrizan", Icon: FaGithub, color: "text-gray-800 dark:text-white" },
-            { href: "https://www.linkedin.com/in/lendraafrizan", Icon: FaLinkedin, color: "text-blue-600" },
+            { href: "https://github.com/lendraam", Icon: FaGithub, color: "text-gray-800 dark:text-white" },
+            { href: "https://www.linkedin.com/in/ulen-yt-810189258/", Icon: FaLinkedin, color: "text-blue-600" },
             { href: "https://twitter.com/lendraafrizan", Icon: FaTwitter, color: "text-blue-400" },
-            { href: "https://www.instagram.com/lendraafrizan", Icon: FaInstagram, color: "text-pink-500" },
+            { href: "https://www.instagram.com/lendra.am/", Icon: FaInstagram, color: "text-pink-500" },
           ].map(({ href, Icon, color }, idx) => (
             <a href={href} target="_blank" rel="noopener noreferrer" key={idx}>
               <Icon className={`text-4xl ${color} hover:opacity-75 transition duration-300`} />
