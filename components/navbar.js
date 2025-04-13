@@ -12,6 +12,7 @@ import {
   Bot,
   Menu,
   X,
+  Gamepad, // ✅ Icon untuk Games
 } from "lucide-react";
 
 export default function Navbar() {
@@ -47,6 +48,11 @@ export default function Navbar() {
       href: "/contact",
       label: "Contact",
       icon: <Mail size={18} className="text-green-500" />,
+    },
+    {
+      href: "/games",
+      label: "Games",
+      icon: <Gamepad size={18} className="text-red-500" />, // ✅ Sudah sesuai
     },
     {
       href: "/rating",
