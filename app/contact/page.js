@@ -13,6 +13,7 @@ export default function ContactPage() {
   const [status, setStatus] = useState("");
   const [comments, setComments] = useState([]);
 
+  // Mengambil komentar dan mengurutkan berdasarkan timestamp
   const fetchComments = async () => {
     const commentsRef = ref(db, "comments");
     try {
@@ -20,6 +21,8 @@ export default function ContactPage() {
       if (snapshot.exists()) {
         const data = snapshot.val();
         const commentList = Object.values(data);
+        // Mengurutkan komentar berdasarkan timestamp dari terbaru ke yang lama
+        commentList.sort((a, b) => b.timestamp - a.timestamp);
         setComments(commentList);
       }
     } catch (error) {
