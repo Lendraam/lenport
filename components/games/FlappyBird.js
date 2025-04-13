@@ -2,141 +2,165 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function SnakeGame() {
+export default function OnoderaJump() {
   const canvasRef = useRef(null);
-  const box = 20;
-  const canvasSize = 400;
-  const [snake, setSnake] = useState([{ x: 9 * box, y: 10 * box }]);
-  const [food, setFood] = useState(randomFood());
-  const [dx, setDx] = useState(1);
-  const [dy, setDy] = useState(0);
   const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const intervalRef = useRef();
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  function randomFood() {
-    return {
-      x: Math.floor(Math.random() * 19 + 1) * box,
-      y: Math.floor(Math.random() * 19 + 1) * box,
-    };
-  }
+  const [canvasSize, setCanvasSize] = useState({ width: 360, height: 500 });
+
+  useEffect(() => {
+    // Resize canvas based on screen
+    const width = window.innerWidth < 400 ? window.innerWidth - 20 : 360;
+    const height = window.innerHeight < 600 ? window.innerHeight - 100 : 500;
+    setCanvasSize({ width, height });
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    function draw() {
-      ctx.fillStyle = "#0f172a";
-      ctx.fillRect(0, 0, canvasSize, canvasSize);
+    canvas.width = canvasSize.width;
+    canvas.height = canvasSize.height;
 
-      snake.forEach((segment, i) => {
-        ctx.fillStyle = i === 0 ? "#22c55e" : "#16a34a";
-        ctx.fillRect(segment.x, segment.y, box, box);
-        ctx.strokeStyle = "#1e293b";
-        ctx.strokeRect(segment.x, segment.y, box, box);
-      });
+    const birdImg = new Image();
+    birdImg.src = "/bird.png";
 
-      ctx.fillStyle = "#ef4444";
-      ctx.fillRect(food.x, food.y, box, box);
+    let bird, pipes, frame, scoreCount, animation;
 
-      const headX = snake[0].x + dx * box;
-      const headY = snake[0].y + dy * box;
+    const initGame = () => {
+      bird = {
+        x: 50,
+        y: 150,
+        width: 35,
+        height: 35,
+        gravity: 0.6,
+        lift: -8,
+        velocity: 0,
+      };
 
-      if (
-        headX < 0 ||
-        headY < 0 ||
-        headX >= canvasSize ||
-        headY >= canvasSize ||
-        collision(headX, headY, snake)
-      ) {
-        clearInterval(intervalRef.current);
-        setGameOver(true);
+      pipes = [];
+      frame = 0;
+      scoreCount = 0;
+      setScore(0);
+      setIsGameOver(false);
+    };
+
+    const jump = () => {
+      if (!isGameOver) {
+        bird.velocity = bird.lift;
+      }
+    };
+
+    const keyHandler = (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (isGameOver) {
+          restartGame();
+        } else {
+          jump();
+        }
+      }
+    };
+
+    const restartGame = () => {
+      initGame();
+      gameLoop();
+    };
+
+    const drawPipe = (pipe) => {
+      ctx.fillStyle = "#16a34a";
+      ctx.fillRect(pipe.x, 0, 50, pipe.top);
+      ctx.fillRect(pipe.x, pipe.bottom, 50, canvas.height - pipe.bottom);
+    };
+
+    const drawBird = () => {
+      ctx.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    };
+
+    const drawScore = () => {
+      ctx.fillStyle = "#333";
+      ctx.font = "18px Arial";
+      ctx.fillText(`Score: ${scoreCount}`, 10, 25);
+    };
+
+    const gameLoop = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      bird.velocity += bird.gravity;
+      bird.y += bird.velocity;
+
+      if (frame % 100 === 0) {
+        const top = Math.random() * (canvas.height / 2);
+        const gap = 110;
+        const bottom = top + gap;
+        pipes.push({ x: canvas.width, top, bottom });
+      }
+
+      for (let i = pipes.length - 1; i >= 0; i--) {
+        const pipe = pipes[i];
+        pipe.x -= 2;
+        drawPipe(pipe);
+
+        if (
+          bird.x < pipe.x + 50 &&
+          bird.x + bird.width > pipe.x &&
+          (bird.y < pipe.top || bird.y + bird.height > pipe.bottom)
+        ) {
+          setIsGameOver(true);
+          cancelAnimationFrame(animation);
+          return;
+        }
+
+        if (pipe.x + 50 < 0) {
+          pipes.splice(i, 1);
+          scoreCount++;
+          setScore(scoreCount);
+        }
+      }
+
+      if (bird.y + bird.height >= canvas.height || bird.y <= 0) {
+        setIsGameOver(true);
+        cancelAnimationFrame(animation);
         return;
       }
 
-      const newHead = { x: headX, y: headY };
-      const newSnake = [...snake];
+      drawBird();
+      drawScore();
 
-      if (headX === food.x && headY === food.y) {
-        setScore((prev) => prev + 1);
-        setFood(randomFood());
-      } else {
-        newSnake.pop();
-      }
-
-      newSnake.unshift(newHead);
-      setSnake(newSnake);
-    }
-
-    intervalRef.current = setInterval(draw, 120);
-
-    function handleKey(e) {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        e.preventDefault();
-        if (e.key === "ArrowUp" && dy === 0) setDxDy(0, -1);
-        else if (e.key === "ArrowDown" && dy === 0) setDxDy(0, 1);
-        else if (e.key === "ArrowLeft" && dx === 0) setDxDy(-1, 0);
-        else if (e.key === "ArrowRight" && dx === 0) setDxDy(1, 0);
-      }
-    }
-
-    window.addEventListener("keydown", handleKey, { passive: false });
-    return () => {
-      clearInterval(intervalRef.current);
-      window.removeEventListener("keydown", handleKey);
+      frame++;
+      animation = requestAnimationFrame(gameLoop);
     };
-  }, [snake, dx, dy, food]);
 
-  function setDxDy(newDx, newDy) {
-    setDx(newDx);
-    setDy(newDy);
-  }
+    birdImg.onload = () => {
+      initGame();
+      gameLoop();
+    };
 
-  function collision(x, y, array) {
-    return array.some((segment) => segment.x === x && segment.y === y);
-  }
+    document.addEventListener("keydown", keyHandler);
 
-  const restartGame = () => {
-    setSnake([{ x: 9 * box, y: 10 * box }]);
-    setFood(randomFood());
-    setDx(1);
-    setDy(0);
-    setScore(0);
-    setGameOver(false);
-  };
+    return () => {
+      document.removeEventListener("keydown", keyHandler);
+      cancelAnimationFrame(animation);
+    };
+  }, [canvasSize, isGameOver]);
 
   return (
-    <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-slate-900 text-white">
-      <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
-        <p className="text-lg sm:text-xl text-center">
-          🎯 Score: <span className="font-semibold">{score}</span>
-        </p>
-        {gameOver && (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 p-4">
+      <h1 className="text-2xl font-bold mb-2 text-blue-800">Onodera Jump</h1>
+      <canvas ref={canvasRef} className="rounded-md shadow-lg border border-gray-300" />
+      <p className="text-sm text-gray-600 mt-2">Tekan <strong>Spasi</strong> untuk melompat</p>
+
+      {isGameOver && (
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <p className="text-red-500 font-semibold text-lg">Game Over</p>
+          <p className="text-blue-800">Score: {score}</p>
           <button
-            onClick={restartGame}
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded text-sm font-semibold"
+            onClick={() => location.reload()}
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
           >
-            🔁 Restart
+            Restart Game
           </button>
-        )}
-      </div>
-
-      <div style={{ width: "100%", maxWidth: "400px" }}>
-        <canvas
-          ref={canvasRef}
-          width={canvasSize}
-          height={canvasSize}
-          className="w-full border-4 border-green-500 bg-slate-800"
-        />
-      </div>
-
-      <p className="mt-4 text-sm text-slate-400 text-center max-w-xs">
-        Gunakan tombol panah untuk mengontrol ular. Jangan tabrak dinding atau tubuh sendiri!
-      </p>
-
-      {gameOver && (
-        <div className="absolute bottom-10 p-3 bg-yellow-400 text-black rounded-full shadow">
-          💀 Game Over
         </div>
       )}
     </div>
