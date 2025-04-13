@@ -64,6 +64,8 @@ export default function RatingPage() {
       if (snapshot.exists()) {
         const ratings = snapshot.val();
         const history = Object.values(ratings);
+        // Mengurutkan komentar berdasarkan timestamp dari terbaru ke yang lama
+        history.sort((a, b) => b.timestamp - a.timestamp);
         setRatingHistory(history);
       }
     } catch (error) {
@@ -86,24 +88,10 @@ export default function RatingPage() {
   };
 
   return (
-    <section
-      className="min-h-screen py-10 px-4 sm:px-6"
-      style={{
-        backgroundColor: "var(--background)",
-        color: "var(--foreground)",
-      }}
-    >
-      <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10">
-        Rate This Website
-      </h2>
+    <section className="min-h-screen py-10 px-4 sm:px-6" style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}>
+      <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10">Rate This Website</h2>
 
-      <div
-        className="w-full max-w-md sm:max-w-lg mx-auto p-6 sm:p-8 rounded-xl shadow-lg space-y-6"
-        style={{
-          backgroundColor: "var(--card)",
-          color: "var(--foreground)",
-        }}
-      >
+      <div className="w-full max-w-md sm:max-w-lg mx-auto p-6 sm:p-8 rounded-xl shadow-lg space-y-6" style={{ backgroundColor: "var(--card)", color: "var(--foreground)" }}>
         <h3 className="text-xl font-semibold mb-2">Please rate your experience:</h3>
 
         <div>
@@ -117,11 +105,7 @@ export default function RatingPage() {
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
             className="w-full mt-2 p-3 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            style={{
-              backgroundColor: "var(--background)",
-              color: "var(--foreground)",
-              borderColor: "var(--muted)",
-            }}
+            style={{ backgroundColor: "var(--background)", color: "var(--foreground)", borderColor: "var(--muted)" }}
             required
           />
         </div>
@@ -131,9 +115,7 @@ export default function RatingPage() {
             <button
               key={ratingValue}
               onClick={() => setUserRating(ratingValue)}
-              className={`p-2 sm:p-3 rounded-full ${
-                userRating >= ratingValue ? "bg-yellow-400" : "bg-gray-300"
-              } hover:bg-yellow-500 transition-all`}
+              className={`p-2 sm:p-3 rounded-full ${userRating >= ratingValue ? "bg-yellow-400" : "bg-gray-300"} hover:bg-yellow-500 transition-all`}
             >
               <span className="text-2xl sm:text-3xl">{getEmote(ratingValue)}</span>
               <div className="text-lg sm:text-xl mt-1">★</div>
@@ -142,14 +124,7 @@ export default function RatingPage() {
         </div>
 
         {statusMessage && (
-          <p
-            className="text-center text-sm font-medium"
-            style={{
-              color: statusMessage.includes("Thank you")
-                ? "green"
-                : "red",
-            }}
-          >
+          <p className="text-center text-sm font-medium" style={{ color: statusMessage.includes("Thank you") ? "green" : "red" }}>
             {statusMessage}
           </p>
         )}
@@ -163,10 +138,7 @@ export default function RatingPage() {
         </button>
 
         {averageRating && (
-          <div
-            className="pt-4 border-t text-center"
-            style={{ borderColor: "var(--muted)" }}
-          >
+          <div className="pt-4 border-t text-center" style={{ borderColor: "var(--muted)" }}>
             <h4 className="text-base font-semibold" style={{ color: "var(--muted)" }}>
               Average Rating:
             </h4>
@@ -184,10 +156,7 @@ export default function RatingPage() {
                 <li
                   key={index}
                   className="p-3 border rounded-lg"
-                  style={{
-                    borderColor: "var(--muted)",
-                    backgroundColor: "var(--background)",
-                  }}
+                  style={{ borderColor: "var(--muted)", backgroundColor: "var(--background)" }}
                 >
                   <p className="font-semibold">{rating.name}</p>
                   <div className="flex items-center mt-1">
@@ -195,9 +164,7 @@ export default function RatingPage() {
                       <span
                         key={star}
                         className="text-lg"
-                        style={{
-                          color: star <= rating.rating ? "gold" : "lightgray",
-                        }}
+                        style={{ color: star <= rating.rating ? "gold" : "lightgray" }}
                       >
                         ★
                       </span>
